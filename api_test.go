@@ -21,7 +21,7 @@ import (
 	"reflect"
 	"testing"
 
-	pb "github.com/google/safebrowsing/internal/safebrowsing_proto"
+	pb "github.com/cpu/safebrowsing/internal/safebrowsing_proto"
 
 	"github.com/golang/protobuf/proto"
 )

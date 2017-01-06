@@ -19,7 +19,7 @@
 // If an error occurred, debug information may be printed to STDERR.
 //
 // To build the tool:
-//	$ go get github.com/google/safebrowsing/cmd/sblookup
+//	$ go get github.com/cpu/safebrowsing/cmd/sblookup
 //
 // Example usage:
 //	$ sblookup -apikey $APIKEY
@@ -35,12 +35,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/google/safebrowsing"
+	"github.com/cpu/safebrowsing"
 )
 
 var (
-	apiKeyFlag   = flag.String("apikey", "", "specify your Safe Browsing API key")
-	databaseFlag = flag.String("db", "", "path to the Safe Browsing database. By default persistent storage is disabled (not recommended).")
+	apiKeyFlag    = flag.String("apikey", "", "specify your Safe Browsing API key")
+	databaseFlag  = flag.String("db", "", "path to the Safe Browsing database. By default persistent storage is disabled (not recommended).")
+	serverURLFlag = flag.String("server", safebrowsing.DefaultServerURL, "server address of the Safe Browsing API")
 )
 
 const usage = `sblookup: command-line tool to lookup URLs with Safe Browsing.
@@ -77,9 +78,10 @@ func main() {
 		os.Exit(codeInvalid)
 	}
 	sb, err := safebrowsing.NewSafeBrowser(safebrowsing.Config{
-		APIKey: *apiKeyFlag,
-		DBPath: *databaseFlag,
-		Logger: os.Stderr,
+		APIKey:    *apiKeyFlag,
+		DBPath:    *databaseFlag,
+		Logger:    os.Stderr,
+		ServerURL: *serverURLFlag,
 	})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Unable to initialize Safe Browsing client: ", err)

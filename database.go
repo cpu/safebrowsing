@@ -19,12 +19,13 @@ import (
 	"compress/gzip"
 	"encoding/gob"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"sync"
 	"time"
 
-	pb "github.com/google/safebrowsing/internal/safebrowsing_proto"
+	pb "github.com/cpu/safebrowsing/internal/safebrowsing_proto"
 )
 
 // jitter is the maximum amount of time that we expect an API list update to
@@ -187,9 +188,10 @@ func (db *database) Update(api api) {
 		db.setError(err)
 		return
 	}
+	db.log.Printf("!! - ListUpdate resp: %#v\n", resp)
 	if len(resp.ListUpdateResponses) != numTypes {
-		db.log.Printf("invalid server response: got %d, want %d threat lists",
-			len(resp.ListUpdateResponses), numTypes)
+		db.log.Printf("invalid server response: got %d, want %d threat lists - %#v",
+			len(resp.ListUpdateResponses), numTypes, resp)
 		db.setError(errors.New("safebrowsing: threat list count mismatch"))
 		return
 	}
@@ -361,6 +363,8 @@ func loadDatabase(path string) (db databaseFormat, err error) {
 func (tfu threatsForUpdate) update(resp *pb.FetchThreatListUpdatesResponse) error {
 	// For each update response do the removes and adds
 	for _, m := range resp.GetListUpdateResponses() {
+		fmt.Printf("Updating with m: %#v\n", m)
+
 		td := ThreatDescriptor{
 			PlatformType:    PlatformType(m.PlatformType),
 			ThreatType:      ThreatType(m.ThreatType),

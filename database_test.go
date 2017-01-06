@@ -26,7 +26,7 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/google/safebrowsing/internal/safebrowsing_proto"
+	pb "github.com/cpu/safebrowsing/internal/safebrowsing_proto"
 )
 
 func mustGetTempFile(t *testing.T) string {
